@@ -375,6 +375,7 @@
  *     4 : 10k thermistor !! do not use it for a hotend. It gives bad resolution at high temp. !!
  *     5 : 100K thermistor - ATC Semitec 104GT-2/104NT-4-R025H42G (Used in ParCan, J-Head, and E3D) (4.7k pullup)
  *   501 : 100K Zonestar (Tronxy X3A) Thermistor
+ *   502 : 100K Zonestar Thermistor used by hot bed in Zonestar Prusa P802M
  *   512 : 100k RPW-Ultra hotend thermistor (4.7k pullup)
  *     6 : 100k EPCOS - Not as accurate as table 1 (created using a fluke thermocouple) (4.7k pullup)
  *     7 : 100k Honeywell thermistor 135-104LAG-J01 (4.7k pullup)
@@ -481,7 +482,9 @@
 #define BANG_MAX 255     // Limits current to nozzle while in bang-bang mode; 255=full current
 #define PID_MAX BANG_MAX // Limits current to nozzle while PID is active (see PID_FUNCTIONAL_RANGE below); 255=full current
 #define PID_K1 0.95      // Smoothing factor within any PID loop
+
 #if ENABLED(PIDTEMP)
+  // TODO: disable these menus to save space
   #define PID_EDIT_MENU           // Add PID editing to the "Advanced Settings" menu. (~700 bytes of PROGMEM)
   #define PID_AUTOTUNE_MENU       // Add PID auto-tuning to the "Advanced Settings" menu. (~250 bytes of PROGMEM)
   //#define PID_DEBUG             // Sends debug data to the serial port. Use 'M303 D' to toggle activation.
@@ -489,8 +492,6 @@
   //#define SLOW_PWM_HEATERS      // PWM with very low frequency (roughly 0.125Hz=8s) and minimum state time of approximately 1s useful for heaters driven by a relay
   //#define PID_PARAMS_PER_HOTEND // Uses separate PID parameters for each extruder (useful for mismatched extruders)
                                   // Set/get with gcode: M301 E[extruder number, 0-2]
-  #define PID_FUNCTIONAL_RANGE 10 // If the temperature difference between the target temperature and the actual temperature
-                                  // is more than PID_FUNCTIONAL_RANGE then the PID will be shut off and the heater will be set to min/max.
 
   // If you are using a pre-configured hotend then you can use one of the value sets by uncommenting it
   // Creality Ender-3
@@ -562,6 +563,14 @@
 
   // FIND YOUR OWN: "M303 E-1 C8 S90" to run autotune on the bed at 90 degreesC for 8 cycles.
 #endif // PIDTEMPBED
+
+#if EITHER(PIDTEMP, PIDTEMPBED)
+  //#define PID_DEBUG             // Sends debug data to the serial port. Use 'M303 D' to toggle activation.
+  //#define PID_OPENLOOP          // Puts PID in open loop. M104/M140 sets the output power from 0 to PID_MAX
+  //#define SLOW_PWM_HEATERS      // PWM with very low frequency (roughly 0.125Hz=8s) and minimum state time of approximately 1s useful for heaters driven by a relay
+  #define PID_FUNCTIONAL_RANGE 10 // If the temperature difference between the target temperature and the actual temperature
+                                  // is more than PID_FUNCTIONAL_RANGE then the PID will be shut off and the heater will be set to min/max.
+#endif
 
 // @section extruder
 
@@ -816,7 +825,9 @@
  *   http://blog.kyneticcnc.com/2018/10/computing-junction-deviation-for-marlin.html
  */
 #if DISABLED(CLASSIC_JERK)
-  #define JUNCTION_DEVIATION_MM 0.08  // (mm) Distance from real junction edge
+  #define JUNCTION_DEVIATION_MM 0.013 // (mm) Distance from real junction edge
+  #define JD_HANDLE_SMALL_SEGMENTS    // Use curvature estimation instead of just the junction angle
+                                      // for small segments (< 1mm) with large junction angles (> 135°).
 #endif
 
 /**
@@ -848,6 +859,9 @@
 // Force the use of the probe for Z-axis homing
 // TODO: experiment with Z endstop pin as fallback for BLTouch on PROBE pin
 #define USE_PROBE_FOR_Z_HOMING
+
+// Force the use of the probe for Z-axis homing
+//#define USE_PROBE_FOR_Z_HOMING
 
 /**
  * Z_MIN_PROBE_PIN
@@ -904,6 +918,11 @@
  * The BLTouch probe uses a Hall effect sensor and emulates a servo.
  */
 #define BLTOUCH
+
+/**
+ * Pressure sensor with a BLTouch-like interface
+ */
+//#define CREALITY_TOUCH
 
 /**
  * Touch-MI Probe by hotends.fr
@@ -1994,6 +2013,12 @@
 //#define MKS_MINI_12864
 
 //
+// MKS LCD12864A/B with graphic controller and SD support. Follows MKS_MINI_12864 pinout.
+// https://www.aliexpress.com/item/33018110072.html
+//
+//#define MKS_LCD12864
+
+//
 // FYSETC variant of the MINI12864 graphic controller with SD support
 // https://wiki.fysetc.com/Mini12864_Panel/
 //
@@ -2094,11 +2119,6 @@
 //#define DGUS_LCD_UI_HIPRECY
 
 //
-// Ender-3 v2 OEM display. A DWIN display with Rotary Encoder.
-//
-//#define DWIN_ENDER3_V2
-
-//
 // Touch-screen LCD for Malyan M200/M300 printers
 //
 //#define MALYAN_LCD
@@ -2124,9 +2144,24 @@
 //
 //#define FSMC_GRAPHICAL_TFT
 
+//
+// TFT Little VGL UI
+//
+//#define TFT_LITTLE_VGL_UI
+
 //=============================================================================
 //============================  Other Controllers  ============================
 //=============================================================================
+
+//
+// Robin nano v2.0 SPI touch screen
+//
+//#define SPI_GRAPHICAL_TFT
+
+//
+// Ender-3 v2 OEM display. A DWIN display with Rotary Encoder.
+//
+//#define DWIN_CREALITY_LCD
 
 //
 // ADS7843/XPT2046 ADC Touchscreen such as ILI9341 2.8
