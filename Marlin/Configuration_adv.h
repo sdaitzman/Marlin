@@ -703,7 +703,7 @@
    * If the machine cannot raise the probe fast enough after a trigger, it may enter a fault state.
    */
   // TODO: use M48 accuracy test to figure out if slow mode is actually more accurate
-  // #define BLTOUCH_HS_MODE
+  #define BLTOUCH_HS_MODE
 
   // Safety: Enable voltage mode settings in the LCD menu.
   //#define BLTOUCH_LCD_VOLTAGE_MENU
