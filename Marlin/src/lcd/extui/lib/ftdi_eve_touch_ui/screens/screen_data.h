@@ -17,7 +17,7 @@
  *   GNU General Public License for more details.                           *
  *                                                                          *
  *   To view a copy of the GNU General Public License, go to the following  *
- *   location: <https://www.gnu.org/licenses/>.                              *
+ *   location: <https://www.gnu.org/licenses/>.                             *
  ****************************************************************************/
 
 #pragma once
@@ -86,7 +86,7 @@ union screen_data_t {
     struct {
       struct base_numeric_adjustment_t placeholder;
       xyz_int_t rel;
-      #if EXTRUDERS > 1
+      #if HAS_MULTI_EXTRUDER
         bool link_nozzles;
       #endif
       bool show_offsets;

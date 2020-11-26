@@ -16,7 +16,7 @@
  *   GNU General Public License for more details.                           *
  *                                                                          *
  *   To view a copy of the GNU General Public License, go to the following  *
- *   location: <https://www.gnu.org/licenses/>.                              *
+ *   location: <https://www.gnu.org/licenses/>.                             *
  ****************************************************************************/
 
 #include "../config.h"
@@ -78,9 +78,9 @@ void BedMeshScreen::drawMesh(int16_t x, int16_t y, int16_t w, int16_t h, ExtUI::
       }
     }
   }
-  if (val_cnt) {
+  if (val_cnt)
     val_mean /= val_cnt;
-  } else {
+  else {
     val_mean = 0;
     val_min  = 0;
     val_max  = 0;
@@ -253,7 +253,7 @@ void BedMeshScreen::drawHighlightedPointValue() {
      .tag(1).button( OKAY_POS, GET_TEXT_F(MSG_BUTTON_OKAY))
      .tag(0);
 
-  switch(screen_data.BedMeshScreen.message) {
+  switch (screen_data.BedMeshScreen.message) {
     case screen_data.BedMeshScreen.MSG_MESH_COMPLETE:   cmd.text(MESSAGE_POS, GET_TEXT_F(MSG_BED_MAPPING_DONE)); break;
     case screen_data.BedMeshScreen.MSG_MESH_INCOMPLETE: cmd.text(MESSAGE_POS, GET_TEXT_F(MSG_BED_MAPPING_INCOMPLETE)); break;
     default: break;
@@ -321,17 +321,16 @@ bool BedMeshScreen::isMeshComplete(ExtUI::bed_mesh_t data) {
 }
 
 void BedMeshScreen::onMeshUpdate(const int8_t x, const int8_t y, const ExtUI::probe_state_t state) {
-  switch(state) {
+  switch (state) {
     case ExtUI::MESH_START:
       screen_data.BedMeshScreen.count = 0;
       screen_data.BedMeshScreen.message = screen_data.BedMeshScreen.MSG_NONE;
       break;
     case ExtUI::MESH_FINISH:
-      if (screen_data.BedMeshScreen.count == GRID_MAX_POINTS && isMeshComplete(ExtUI::getMeshArray())) {
+      if (screen_data.BedMeshScreen.count == GRID_MAX_POINTS && isMeshComplete(ExtUI::getMeshArray()))
         screen_data.BedMeshScreen.message = screen_data.BedMeshScreen.MSG_MESH_COMPLETE;
-      } else {
+      else
         screen_data.BedMeshScreen.message = screen_data.BedMeshScreen.MSG_MESH_INCOMPLETE;
-      }
       screen_data.BedMeshScreen.count = GRID_MAX_POINTS;
       break;
     case ExtUI::PROBE_START:
